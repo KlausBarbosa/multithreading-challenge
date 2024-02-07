@@ -41,15 +41,18 @@ func chamaViaCep(cep string, resultChan chan<- dto.ViaCEP) {
 	req, err := http.Get("http://viacep.com.br/ws/" + cep + "/json/")
 	if err != nil {
 		fmt.Fprint(os.Stderr, "Erro ao fazer requisicao: %v\n", err)
+		return
 	}
 	res, err := io.ReadAll(req.Body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao ler resposta: %v\n", err)
+		return
 	}
 	var data dto.ViaCEP
 	err = json.Unmarshal(res, &data)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao fazer o parse da resposta %v\n", err)
+		return
 	}
 	resultChan <- data
 }
@@ -58,15 +61,18 @@ func chamaBrasilApi(cep string, resultChan chan<- dto.BrasilApi) {
 	req, err := http.Get("https://brasilapi.com.br/api/cep/v1/" + cep)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao fazer requisicao: %v\n", err)
+		return
 	}
 	res, err := io.ReadAll(req.Body)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao ler resposta: %v\n", err)
+		return
 	}
 	var data dto.BrasilApi
 	err = json.Unmarshal(res, &data)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao fazer o parse da resposta %v\n", err)
+		return
 	}
 	resultChan <- data
 }
